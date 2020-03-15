@@ -1,10 +1,11 @@
+import cv2 as cv
 import json
 
 
 def hello(event, context):
     body = {
         "message": "Go Serverless v1.0! Your function executed successfully!",
-        "input": event
+        "opencv": f"{cv.__version__}"
     }
 
     response = {
@@ -13,12 +14,3 @@ def hello(event, context):
     }
 
     return response
-
-    # Use this code if you don't use the http event with the LAMBDA-PROXY
-    # integration
-    """
-    return {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
-        "event": event
-    }
-    """

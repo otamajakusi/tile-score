@@ -23,10 +23,10 @@ service: server
 provider:
   name: aws
   runtime: python3.7
-
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+  timeout: 15
+  memorySize: 3008
+  stage: dev
+  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -63,6 +63,8 @@ functions:
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
+    layers:
+      - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
     events:
       - http:
           path: test
