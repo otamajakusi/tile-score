@@ -19,9 +19,9 @@ IMAGES_BUCKET = "tile-score-images"
 def draw_bounding_boxes():
     image = cv2.imread(IMAGE)
     s3 = boto3.client('s3')
-    bucket.download_file(WIEGHTS_BUCKET, WEIGHTS_NAME, f"/tmp/{WEIGHTS_NAME}")
+    s3.download_file(WEIGHTS_BUCKET, WEIGHTS_NAME, f"/tmp/{WEIGHTS_NAME}")
 
     image = detection.draw_bounding_boxes(image, f"/tmp/{WEIGHTS_NAME}", CONFIG, CLASSES)
     cv2.imwrite("/tmp/object-detection.jpg", image)
-    bucket.upload_file("/tmp/object-detection.jpg", IMAGES_BUCKET)
+    s3.upload_file("/tmp/object-detection.jpg", IMAGES_BUCKET)
 

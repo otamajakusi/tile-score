@@ -1,4 +1,5 @@
-import cv2 as cv
+import cv2
+import numpy as np
 
 DNN_IMAGE_SIZE = (512, 512)
 
