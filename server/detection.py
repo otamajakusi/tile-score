@@ -69,8 +69,7 @@ def predict_bounding_boxes(image, weights, config, classes):
     return results
 
 
-def draw_bounding_boxes(image, weights, config, classes):
-    results = predict_bounding_boxes(image, weights, config, classes)
+def draw_bounding_boxes(image, classes, predict_results):
 
     # function to draw bounding box on the detected object with class name
     def draw_bounding_box(img, class_id, x, y, x_plus_w, y_plus_h):
@@ -79,7 +78,7 @@ def draw_bounding_boxes(image, weights, config, classes):
         cv2.rectangle(img, (x, y), (x_plus_w, y_plus_h), color, 2)
         cv2.putText(img, label, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    for result in results:
+    for result in predict_results:
         box = result["box"]
         x = box[0]
         y = box[1]

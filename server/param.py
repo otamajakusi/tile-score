@@ -1,9 +1,13 @@
 import os
+from io import BytesIO
+import numpy as np
+import cv2
 from datetime import datetime, timedelta, timezone
 from Crypto.Util import Counter
 from Crypto.Cipher import AES
 import imghdr
 import binascii
+import base64
 
 IMAGE_LIST = ["jpeg", "png"]
 MAGIC = os.environ["MAGIC"]
@@ -21,7 +25,7 @@ def is_in_time(epoc):
 
 
 def is_valid_apikey(apikey):
-    if os.environment["development"]:
+    if os.environ.get("development"):
         return True
     if len(apikey) < 64 or len(apikey) & 1:
         return False
@@ -43,27 +47,42 @@ def is_valid_apikey(apikey):
     return True
 
 
-def is_valid_image(image):
-    img_dec = base64.b64decode(image)
-    if imghdr.what(BytesIO(img_dec)) not in IMAGE_LIST:
-        return False
-    img_np = np.formatstring(img_dec, np.uint8)
-    image = cv2.imdecode(img_np)
-    return True
+def decode_image(encoded):
+    try:
+        decoded = base64.b64decode(encoded, validate=True)
+    except binascii.Error:
+        print(f"decode error")
+        return None
+    image_type = imghdr.what(BytesIO(decoded))
+    if image_type not in IMAGE_LIST:
+        print(f"illegal image_type: {image_type}")
+        return None
+
+    image_np = np.fromstring(decoded, np.uint8)
+    image = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
+    if len(image.shape) != 3:
+        print("illegal image format")
+        return None
+    height, width, _ = image.shape[:3]
+    if height != 512 or width >= 1024:
+        print(f"illegal image size: height={height}, width={width}")
+        return None
+    return image
 
 
 def is_valid_param(event, context, result):
-    version = data.get("version")
-    device = data.get("device")
-    apikey = data.get("apikey")
-    image = data.get("image")
-    tsumo = data.get("tsumo")
+    version = event.get("version")
+    device = event.get("device")
+    apikey = event.get("apikey")
+    image = event.get("image")
+    tsumo = event.get("tsumo")
     print(f"version={version}, device={device}")
     if image is None or tsumo is None:
         return False
     if not is_valid_apikey(apikey):
         return False
-    if not is_valid_imae(image):
+    image = decode_image(image)
+    if image is None:
         return False
     result["image"] = image
     result["tsumo"] = tsumo

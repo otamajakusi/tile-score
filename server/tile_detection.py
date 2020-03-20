@@ -1,10 +1,9 @@
 import cv2
 import detection
 import boto3
-import os
 from tile_score import TileId, score
+import sys
 
-IMAGE = "./202002030632-52248.png"
 CONFIG = "./yolov3-tile.cfg"
 CLASSES = [
     "bk",
@@ -35,13 +34,13 @@ CLASSES = [
     "s7",
     "s8",
     "s9",
-    "sc",
-    "sh",
-    "sw",
-    "wn",
-    "wp",
-    "ws",
-    "wt",
+    "sc",  # sangen-chun
+    "sh",  # sangen-hatsu
+    "sw",  # sangen-white
+    "wn",  # winds-nan
+    "wp",  # winds-pei
+    "ws",  # winds-sha
+    "wt",  # winds-ton
 ]
 
 # convert class_id to tile id used in tile_score.
@@ -78,15 +77,15 @@ CLASSID_TO_SCORE_TILE_ID = [
     int(TileId.SOU7),
     int(TileId.SOU8),
     int(TileId.SOU9),
-    # TON,NAN,SHA,PEI
-    int(TileId.TON),
-    int(TileId.NAN),
-    int(TileId.SHA),
-    int(TileId.PEI),
-    # HAKU,HATSU,CHUN
-    int(TileId.HAKU),
-    int(TileId.HATSU),
+    # CHUN,HATSU,HAKU
     int(TileId.CHUN),
+    int(TileId.HATSU),
+    int(TileId.HAKU),
+    # TON,NAN,SHA,PEI
+    int(TileId.NAN),
+    int(TileId.PEI),
+    int(TileId.SHA),
+    int(TileId.TON),
 ]
 
 WEIGHTS_BUCKET = "tile-score-weights"
@@ -106,26 +105,17 @@ def upload_image(s3, image_name):
     s3.upload_file(image_name, f"{DIR_NAME}/{IMAGE_NAME}", IMAGES_BUCKET, IMAGE_NAME)
 
 
-# TODO
-# 1.
-# 2. upload image to s3 for each month's directory.
-def draw_bounding_boxes(image, weights_name):
-    return detection.draw_bounding_boxes(image, weights_name, CONFIG, CLASSES)
+def draw_bounding_boxes(image, predict_results):
+    return detection.draw_bounding_boxes(image, CLASSES, predict_results)
 
 
 def predict_bounding_boxes(image, weights_name):
     return detection.predict_bounding_boxes(image, weights_name, CONFIG, CLASSES)
 
 
-if __name__ == "__main__":
-    print(f"opencv version: {cv2.__version__}")
-    weights_name = f"{DIR_NAME}/{WEIGHTS_NAME}"
-    image_name = f"{DIR_NAME}/{IMAGE_NAME}"
-    # download_weight(weights_name)
-    image = cv2.imread(IMAGE)
-    results = predict_bounding_boxes(image, weights_name)
+def convert_to_score_boxes(predict_results):
     score_boxes = []
-    for result in results:
+    for result in predict_results:
         box = result["box"]
         class_id = result["class_id"]
         x = box[0]
@@ -141,8 +131,19 @@ if __name__ == "__main__":
                 round(y + h),
             ]
         )
+    return score_boxes
 
+
+if __name__ == "__main__":
+    print(f"opencv version: {cv2.__version__}")
+    weights_name = f"{DIR_NAME}/{WEIGHTS_NAME}"
+    image_name = f"{DIR_NAME}/{IMAGE_NAME}"
+    # download_weight(weights_name)
+    image = cv2.imread(sys.argv[1])
+    results = predict_bounding_boxes(image, weights_name)
+    score_boxes = convert_to_score_boxes(results)
     print(score_boxes)
     score(score_boxes, True, 256)
+    image = draw_bounding_boxes(image, results)
     cv2.imwrite(image_name, image)
     # upload_image(image_name)
