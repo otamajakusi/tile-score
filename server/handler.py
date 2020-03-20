@@ -42,19 +42,26 @@ def _score(event, context):
     scores["width"] = width
     scores["height"] = height
 
-    image_category = "image"
-    if os.environ.get("STAGE") == "dev":
-        image_category += "-dev"
-    tile_detection.upload_image(image, image_category)
     return {"statsuCode": 200, "body": json.dumps(scores)}
 
 
 def score(event, context):
     try:
-        return _score(event, context)
+        resp = _score(event, context)
+        status_code = resp["statusCode"]
+        return resp
     except Exception as e:
         print(e)
-        return {"statsuCode": 500, "body": "internal server error"}
+        resp = {"statsuCode": 500, "body": "internal server error"}
+        status_code = resp["statusCode"]
+        return resp
+    finally:
+        image_category = "image"
+        if status_code != 200:
+            image_category += f"-{str(status_code)}"
+        if os.environ.get("STAGE") == "dev":
+            image_category += "-dev"
+        tile_detection.upload_image(image, image_category)
 
 
 if __name__ == "__main__":
