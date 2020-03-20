@@ -3,6 +3,9 @@ import detection
 import boto3
 from tile_score import TileId, score
 import sys
+import os
+from datetime import datetime
+import random
 
 CONFIG = "./yolov3-tile.cfg"
 CLASSES = [
@@ -94,26 +97,38 @@ IMAGES_BUCKET = "tile-score-images"
 IMAGE_NAME = "object-detection.jpg"
 DIR_NAME = "/tmp"
 
+WEIGHTS_NAME_DEFAULT = f"{DIR_NAME}/{WEIGHTS_NAME}"
 
-def download_weights(weights_name):
+
+def download_weights(weights_name=WEIGHTS_NAME_DEFAULT):
+    if not os.path.exists(weights_name):
+        s3 = boto3.client("s3")
+        s3.download_file(WEIGHTS_BUCKET, WEIGHTS_NAME, weights_name)
+
+
+def upload_image(image, category):
+    now = datetime.now()
+    image_name = f"{now:%Y%m%d%H%M}-{random.randint(0, 100000):05}.png"
+    cv2.imwrite(image_name, image)
+    yearmonth = f"{now:%Y%m}"
     s3 = boto3.client("s3")
-    s3.download_file(WEIGHTS_BUCKET, WEIGHTS_NAME, weights_name)
-
-
-def upload_image(s3, image_name):
-    s3 = boto3.client("s3")
-    s3.upload_file(image_name, f"{DIR_NAME}/{IMAGE_NAME}", IMAGES_BUCKET, IMAGE_NAME)
+    s3.upload_file(
+        image_name,
+        f"{DIR_NAME}/{image_name}",
+        IMAGES_BUCKET,
+        f"{category}/{yearmonth}/{image_name}",
+    )
 
 
 def draw_bounding_boxes(image, predict_results):
     return detection.draw_bounding_boxes(image, CLASSES, predict_results)
 
 
-def predict_bounding_boxes(image, weights_name):
+def predict_bounding_boxes(image, weights_name=WEIGHTS_NAME_DEFAULT):
     return detection.predict_bounding_boxes(image, weights_name, CONFIG, CLASSES)
 
 
-def convert_to_score_boxes(predict_results):
+def convert_to_rectangle(predict_results, class_id_converter=None):
     score_boxes = []
     for result in predict_results:
         box = result["box"]
@@ -124,7 +139,7 @@ def convert_to_score_boxes(predict_results):
         h = box[3]
         score_boxes.append(
             [
-                CLASSID_TO_SCORE_TILE_ID[class_id],
+                class_id_converter[class_id] if class_id_converter is not None else class_id,
                 round(x),
                 round(y),
                 round(x + w),
@@ -132,6 +147,10 @@ def convert_to_score_boxes(predict_results):
             ]
         )
     return score_boxes
+
+
+def convert_to_score_boxes(predict_results):
+    return convert_to_rectangle(predict_results, CLASSID_TO_SCORE_TILE_ID)
 
 
 if __name__ == "__main__":

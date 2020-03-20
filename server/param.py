@@ -25,7 +25,11 @@ def is_in_time(epoc):
 
 
 def is_valid_apikey(apikey):
-    if os.environ.get("development"):
+    # NOTE: tsu-iscd/jcrypto support counter mode only.
+    # apikey[0:31]: counter
+    # apikey[32:63]: MAGIC
+    # apikey[64:??]: epoc
+    if os.environ.get("STAGE") == "dev":
         return True
     if len(apikey) < 64 or len(apikey) & 1:
         return False
@@ -70,7 +74,7 @@ def decode_image(encoded):
     return image
 
 
-def is_valid_param(event, context, result):
+def is_valid_param(event, result):
     version = event.get("version")
     device = event.get("device")
     apikey = event.get("apikey")

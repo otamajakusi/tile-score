@@ -3,37 +3,72 @@ import tile_detection
 import param
 import base64
 import sys
+import os
 import cv2
-from tile_score import score
+import tile_score
+from yaku_ja import YAKU_JA as YAKU_NAME
 
 
-def hello(event, context):
-    body = {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
-    }
+def ping(event, context):
+    return {"statusCode": 200, "body": "pong"}
 
-    response = {"statusCode": 200, "body": json.dumps(body)}
 
+def _score(event, context):
+    params = {}
+    tile_detection.download_weights()
+    if not param.is_valid_param(event, params):
+        return {"statsuCode": 400, "body": json.dumps({"error": "data"})}
+
+    image = params["image"]
+    tsumo = params["tsumo"]
+    predict = tile_detection.predict_bounding_boxes(image)
+    score_boxes = tile_detection.convert_to_score_boxes(predict)
+    height, width, _ = image.shape[:3]
+    print(f"height:{height}, width:{width}")
+    result = tile_score.score(score_boxes, tsumo, round(height / 2))
+    scores = {}
+    if result is None:
+        scores["error"] = "invalid"
+    elif result.error is not None and result.error != "There are no yaku in the hand":
+        scores["error"] = result.error
+    else:
+        scores["han"] = result.han
+        scores["fu"] = result.fu
+        scores["yaku"] = (
+            [] if result.yaku is None else [YAKU_NAME[yaku.name] for yaku in result.yaku]
+        )
+        scores["fu_details"] = [] if result.fu_details is None else result.fu_details
+    scores["boxes"] = tile_detection.convert_to_score_boxes(predict)
+    scores["width"] = width
+    scores["height"] = height
+
+    image_category = "image"
+    if os.environ.get("STAGE") == "dev":
+        image_category += "-dev"
+    tile_detection.upload_image(image, image_category)
+    return {"statsuCode": 200, "body": json.dumps(scores)}
+
+
+def score(event, context):
     try:
-        tile_detection.draw_bounding_boxes()
+        return _score(event, context)
     except Exception as e:
-        response["body"] = e
-
-    return response
+        print(e)
+        return {"statsuCode": 500, "body": "internal server error"}
 
 
 if __name__ == "__main__":
     result = {}
     with open(sys.argv[1], "rb") as f:
         image_encode = base64.b64encode(f.read())
-    event = {"image": image_encode, "tsumo": True}
-    param.is_valid_param(event, None, result)
-    weights = f"{tile_detection.DIR_NAME}/{tile_detection.WEIGHTS_NAME}"
+    tsumo = True
+    event = {"image": image_encode, "tsumo": tsumo}
+    param.is_valid_param(event, result)
     image = result["image"]
-    predict = tile_detection.predict_bounding_boxes(image, weights)
+    predict = tile_detection.predict_bounding_boxes(image)
     score_boxes = tile_detection.convert_to_score_boxes(predict)
     height, width, _ = image.shape[:3]
     print(f"height:{height}, width:{width}")
-    score(score_boxes, event["tsumo"], round(height / 2))
+    score_result = tile_score.score(score_boxes, tsumo, round(height / 2))
     image = tile_detection.draw_bounding_boxes(image, predict)
     cv2.imwrite(sys.argv[2] if len(sys.argv) > 2 else "predict.jpg", image)
