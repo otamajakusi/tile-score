@@ -28,13 +28,14 @@ provider:
   stage: ${opt:stage, self:custom.defaultStage}
   region: us-east-1
 
-  custom:
-    defaultStage: dev
-    # NOTE: AWS KMS costs $1/month for each CMS emtry.
-    # So the secrets are handled w/ environment variables.
-    environment:
-      dev: ${file(../env/dev.yml)}
-      prod: ${file(../env/prod.yml)}
+custom:
+  defaultStage: dev
+  # NOTE: AWS KMS costs $1/month for each CMS emtry.
+  # So the secrets are handled w/ environment variables.
+  environment:
+    STAGE: ${self:provider.stage}
+    MAGIC: ${file(../env/env.yml):${self:provider.stage}.MAGIC}
+    KEY: ${file(../env/env.yml):${self:provider.stage}.KEY}
 
 # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
@@ -75,18 +76,17 @@ functions:
       - http:
           path: ping
           method: get
+    environment: ${self:custom.environment}
 
-  hello:
-    handler: handler.hello
+  score:
+    handler: handler.score
     layers:
       - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
     events:
       - http:
-          path: test
-          method: get
-    environment:
-      STAGE: ${self:provider.stage}
-      ${self:custom.environment.${self:provider.stage}}
+          path: score
+          method: put
+    environment: ${self:custom.environment}
 
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
@@ -128,3 +128,7 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+
+plugins:
+  - serverless-offline
+  - serverless-offline-python
