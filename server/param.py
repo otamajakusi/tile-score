@@ -27,10 +27,8 @@ def is_in_time(epoc):
 def is_valid_apikey(apikey):
     # NOTE: tsu-iscd/jcrypto support counter mode only.
     # apikey[0:31]: counter
-    # apikey[32:63]: MAGIC
-    # apikey[64:??]: epoc
-    if os.environ.get("STAGE") == "dev":
-        return True
+    # apikey[32:96]: MAGIC
+    # apikey[96:]: epoc
     if len(apikey) < 64 or len(apikey) & 1:
         return False
     ctr = Counter.new(128, initial_value=int(apikey[:32], 16))
@@ -74,12 +72,12 @@ def decode_image(encoded):
     return image
 
 
-def is_valid_param(event, result):
-    version = event.get("version")
-    device = event.get("device")
-    apikey = event.get("apikey")
-    image = event.get("image")
-    tsumo = event.get("tsumo")
+def is_valid_param(body, result):
+    version = body.get("version")
+    device = body.get("device")
+    apikey = body.get("apikey")
+    image = body.get("image")
+    tsumo = body.get("tsumo")
     print(f"version={version}, device={device}")
     if image is None or tsumo is None:
         return False

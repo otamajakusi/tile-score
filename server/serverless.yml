@@ -85,7 +85,7 @@ functions:
     events:
       - http:
           path: score
-          method: put
+          method: post
     environment: ${self:custom.environment}
 
 #      - websocket: $connect

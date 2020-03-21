@@ -45,7 +45,8 @@ def predict_bounding_boxes(image, weights, config, classes):
             class_id = np.argmax(scores)
             confidence = scores[class_id]
             if scores.sum() > 0.5:
-                print(classes[class_id], sorted(scores.tolist(), reverse=True)[:3])
+                # print(classes[class_id], sorted(scores.tolist(), reverse=True)[:3])
+                pass
             if confidence > 0.5:
                 center_x = int(detection[0] * width)
                 center_y = int(detection[1] * height)
