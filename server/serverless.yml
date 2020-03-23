@@ -56,22 +56,16 @@ custom:
       Resource:
         - "arn:aws:s3:::tile-score-images/*"
 
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.py
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.py
-#    - exclude-me-dir/**
+  pythonRequirements:
+    usePoetry: false
+    useDownloadCache: true
+    useStaticCache: true
 
 functions:
   ping:
     handler: handler.ping
+    layers:
+      - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
     events:
       - http:
           path: ping
@@ -132,3 +126,4 @@ functions:
 plugins:
   - serverless-offline
   - serverless-offline-python
+  - serverless-python-requirements
