@@ -109,14 +109,11 @@ def download_weights(weights_name=WEIGHTS_NAME_DEFAULT):
 def upload_image(image, category):
     now = datetime.now()
     image_name = f"{now:%Y%m%d%H%M}-{random.randint(0, 100000):05}.png"
-    cv2.imwrite(image_name, image)
+    cv2.imwrite(f"{DIR_NAME}/{image_name}", image)
     yearmonth = f"{now:%Y%m}"
     s3 = boto3.client("s3")
     s3.upload_file(
-        image_name,
-        f"{DIR_NAME}/{image_name}",
-        IMAGES_BUCKET,
-        f"{category}/{yearmonth}/{image_name}",
+        f"{DIR_NAME}/{image_name}", IMAGES_BUCKET, f"{category}/{yearmonth}/{image_name}",
     )
 
 

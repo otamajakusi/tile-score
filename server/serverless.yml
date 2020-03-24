@@ -28,16 +28,7 @@ provider:
   stage: ${opt:stage, self:custom.defaultStage}
   region: us-east-1
 
-custom:
-  defaultStage: dev
-  # NOTE: AWS KMS costs $1/month for each CMS emtry.
-  # So the secrets are handled w/ environment variables.
-  environment:
-    STAGE: ${self:provider.stage}
-    MAGIC: ${file(../env/env.yml):${self:provider.stage}.MAGIC}
-    KEY: ${file(../env/env.yml):${self:provider.stage}.KEY}
-
-# you can add statements to the Lambda function's IAM Role here
+  # you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -55,6 +46,15 @@ custom:
         - "s3:PutObject"
       Resource:
         - "arn:aws:s3:::tile-score-images/*"
+
+custom:
+  defaultStage: dev
+  # NOTE: AWS KMS costs $1/month for each CMS emtry.
+  # So the secrets are handled w/ environment variables.
+  environment:
+    STAGE: ${self:provider.stage}
+    MAGIC: ${file(../env/env.yml):${self:provider.stage}.MAGIC}
+    KEY: ${file(../env/env.yml):${self:provider.stage}.KEY}
 
   pythonRequirements:
     usePoetry: false

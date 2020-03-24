@@ -45,6 +45,7 @@ def _score(event, context):
 
 
 def score(event, context):
+    image = None
     try:
         resp, image = _score(event, context)
         status_code = resp["statusCode"]
