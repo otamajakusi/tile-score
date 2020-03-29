@@ -26,6 +26,11 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import { RNCamera } from 'react-native-camera';
+import { Table, TableWrapper, Col, Row, Rows } from 'react-native-table-component';
+
+import {generateScoreDealer, generateScoreNondealer, labelJaTable } from 'score';
+
 declare var global: {HermesInternal: null | {}};
 
 const App = () => {
