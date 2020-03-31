@@ -37,10 +37,10 @@ def _score(event, context):
             [] if result.yaku is None else [YAKU_NAME[yaku.name] for yaku in result.yaku]
         )
         scores["fu_details"] = [] if result.fu_details is None else result.fu_details
-    scores["boxes"] = tile_detection.convert_to_score_boxes(predict)
+    scores["boxes"] = tile_detection.convert_to_rectangle(predict, tile_detection.CLASSES)
     scores["width"] = width
     scores["height"] = height
-
+    print(scores)
     return {"statusCode": 200, "body": json.dumps(scores)}, image
 
 

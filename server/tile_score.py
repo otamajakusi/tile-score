@@ -382,9 +382,9 @@ def boxes_is_kan(boxes):
 
 
 def boxes_is_closed_kan(boxes):
-    if boxes[0][0] == boxes[3][0] and boxes[1][0] == boxes[2][0] == BACK:
+    if boxes[0][0] == boxes[3][0] and boxes[1][0] == boxes[2][0] == TileId.BACK:
         return boxes[0][0]
-    if boxes[0][0] == boxes[3][0] == BACK and boxes[1][0] == boxes[2][0]:
+    if boxes[0][0] == boxes[3][0] == TileId.BACK and boxes[1][0] == boxes[2][0]:
         return boxes[1][0]
     return None
 
