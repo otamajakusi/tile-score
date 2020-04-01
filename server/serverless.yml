@@ -61,6 +61,13 @@ custom:
     useDownloadCache: true
     useStaticCache: true
 
+package:
+  exclude:
+    - ./**
+  include:
+    - ./*.py
+    - ./yolov3-tile.cfg
+
 functions:
   ping:
     handler: handler.ping
