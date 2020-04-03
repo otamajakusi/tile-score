@@ -53,8 +53,8 @@ custom:
   # So the secrets are handled w/ environment variables.
   environment:
     STAGE: ${self:provider.stage}
-    MAGIC: ${file(../env/env.yml):${self:provider.stage}.MAGIC}
-    KEY: ${file(../env/env.yml):${self:provider.stage}.KEY}
+    MAGIC: ${file(../env/env.yml):MAGIC}
+    KEY: ${file(../env/env.yml):KEY}
 
   pythonRequirements:
     usePoetry: false

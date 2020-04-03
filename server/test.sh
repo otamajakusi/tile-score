@@ -9,8 +9,8 @@ if [ "${host}" = "" ]; then
 	exit 1
 fi
 
-KEY="fedcba9876543210fedcba9876543210"
-MAGIC="0123456789abcdef0123456789abcdef"
+KEY=$(cat ../env/env.yml | awk '/KEY/ {print $2}')
+MAGIC=$(cat ../env/env.yml | awk '/MAGIC/ {print $2}')
 IV="00000000000000000000000000000000"
 
 epoc=$(date +%s | tr -d '\n')
