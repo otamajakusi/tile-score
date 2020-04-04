@@ -1,15 +1,15 @@
 # tile-score
 
+## setup
+```
+npm install severless --save-dev
+```
+
 ##
 
-`server` is created by `serverless create --template aws-pytohn3 --path server`.
+`server` is created by `npx serverless create --template aws-python3 --path server`.
 
-## setup
-
-```bash
-$ sudo apt install npm
-$ sudo npm install -g serverless
-```
+`certupdate` is created by `npx serverless create --template aws-python3 --path server`.
 
 `https://github.com/iandow/opencv_aws_lambda`
 
