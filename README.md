@@ -2,7 +2,7 @@
 
 ##
 
-`server` is created by `serverless create --template aws-pytohn3 --path server`.
+`server` is created by `serverless create --template aws-python3 --path server`.
 
 ## setup
 
