@@ -69,15 +69,25 @@ package:
     - ./yolov3-tile.cfg
 
 functions:
-  ping:
-    handler: handler.ping
+  hello:
+    handler: handler.hello
     layers:
       - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
     events:
       - http:
-          path: ping
+          path: hello
           method: get
       - schedule: rate(5 minutes)
+    environment: ${self:custom.environment}
+
+  forbidden:
+    handler: handler.forbidden
+    layers:
+      - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
+    events:
+      - http:
+          path: v1/score
+          method: post
     environment: ${self:custom.environment}
 
   score:
@@ -86,7 +96,7 @@ functions:
       - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
     events:
       - http:
-          path: score
+          path: v2/score
           method: post
     environment: ${self:custom.environment}
 

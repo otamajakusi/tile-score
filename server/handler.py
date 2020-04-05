@@ -6,8 +6,12 @@ import tile_score
 from yaku_ja import YAKU_JA as YAKU_NAME
 
 
-def ping(event, context):
-    return {"statusCode": 200, "body": "pong"}
+def hello(event, context):
+    return {"statusCode": 200, "body": "hello"}
+
+
+def forbidden(event, context):
+    return {"statusCode": 403, "body": "forbidden"}
 
 
 def _score(event, context):
