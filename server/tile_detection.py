@@ -9,7 +9,7 @@ import random
 
 CONFIG = "./yolov3-tile.cfg"
 CLASSES = [
-    "bk",
+    "back",
     "m1",
     "m2",
     "m3",
@@ -37,13 +37,13 @@ CLASSES = [
     "s7",
     "s8",
     "s9",
-    "sc",  # sangen-chun
-    "sh",  # sangen-hatsu
-    "sw",  # sangen-white
-    "wn",  # winds-nan
-    "wp",  # winds-pei
-    "ws",  # winds-sha
-    "wt",  # winds-ton
+    "chun",
+    "hatsu",
+    "haku",
+    "nan",  # winds-nan
+    "pei",  # winds-pei
+    "sha",  # winds-sha
+    "ton",  # winds-ton
 ]
 
 # convert class_id to tile id used in tile_score.

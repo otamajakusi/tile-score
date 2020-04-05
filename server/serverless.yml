@@ -84,10 +84,10 @@ functions:
     handler: handler.forbidden
     layers:
       - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
-    events:
-      - http:
-          path: v1/score
-          method: post
+    # events:
+    #  - http:
+    #      path: v1/score
+    #      method: post
     environment: ${self:custom.environment}
 
   score:
@@ -95,6 +95,9 @@ functions:
     layers:
       - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
     events:
+      - http:
+          path: v1/score
+          method: post
       - http:
           path: v2/score
           method: post
