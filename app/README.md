@@ -14,8 +14,8 @@ and launch app from another terminal.
 npx react-native run-android
 ```
 
-## watchman error
-[react-native start error]
+## error
+[npx react-native start watchman error]
 https://github.com/facebook/react-native/issues/3199#issuecomment-145426578
 ```
 echo 256 | sudo tee -a /proc/sys/fs/inotify/max_user_instances
@@ -24,7 +24,7 @@ echo 65536 | sudo tee -a /proc/sys/fs/inotify/max_user_watches
 watchman shutdown-server
 ```
 
-[react-native-camera error]
+[npx react-native-camera error]
 https://github.com/react-native-community/react-native-camera/issues/2138#issuecomment-471669956
 ```
 android {
