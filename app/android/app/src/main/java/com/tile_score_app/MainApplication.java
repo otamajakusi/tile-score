@@ -1,4 +1,4 @@
-package com.app;
+package com.tile_score_app;
 
 import android.app.Application;
 import android.content.Context;

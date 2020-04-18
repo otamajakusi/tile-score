@@ -128,11 +128,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.app"
+        applicationId "com.tile_score_app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 170
+        versionName "1.7.0"
         missingDimensionStrategy 'react-native-camera', 'general'
     }
     splits {
