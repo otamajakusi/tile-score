@@ -66,7 +66,7 @@ def score(event, context):
             image_category += "-dev"
         if status_code is None or resp["body"] is None:
             image_category += "-500"
-        elif resp["body"]["error"] is not None:
+        elif json.loads(resp["body"]).get("error") is not None:
             image_category += "-ng"
         elif status_code != 200:
             image_category += f"-${str(status_code)}"
