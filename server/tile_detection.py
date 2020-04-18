@@ -6,6 +6,7 @@ import sys
 import os
 from datetime import datetime
 import random
+import shutil
 
 CONFIG = "./yolov3-tile.cfg"
 CLASSES = [
@@ -101,7 +102,11 @@ WEIGHTS_NAME_DEFAULT = f"{DIR_NAME}/{WEIGHTS_NAME}"
 
 
 def download_weights(weights_name=WEIGHTS_NAME_DEFAULT):
-    if not os.path.exists(weights_name):
+    if os.path.exists(weights_name):
+        return
+    if os.path.exists(f"./{WEIGHTS_NAME}"):
+        shutil.copyfile(f"./{WEIGHTS_NAME}", weights_name)
+    else:
         s3 = boto3.client("s3")
         s3.download_file(WEIGHTS_BUCKET, WEIGHTS_NAME, weights_name)
 
