@@ -126,8 +126,8 @@ def draw_bounding_boxes(image, predict_results):
     return detection.draw_bounding_boxes(image, CLASSES, predict_results)
 
 
-def predict_bounding_boxes(image, weights_name=WEIGHTS_NAME_DEFAULT):
-    return detection.predict_bounding_boxes(image, weights_name, CONFIG, CLASSES)
+def predict_bounding_boxes(image, weights_name=WEIGHTS_NAME_DEFAULT, config=CONFIG):
+    return detection.predict_bounding_boxes(image, weights_name, config, CLASSES)
 
 
 def convert_to_rectangle(predict_results, class_id_converter=None):
@@ -156,12 +156,20 @@ def convert_to_score_boxes(predict_results):
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--weight", help="weight file", default=f"{DIR_NAME}/{WEIGHTS_NAME}")
+    parser.add_argument("--input", help="input image file")
+    parser.add_argument("--output", help="output image file", default=f"{DIR_NAME}/{IMAGE_NAME}")
+    parser.add_argument("--config", help="config file", default=CONFIG)
+    args = parser.parse_args()
+
     print(f"opencv version: {cv2.__version__}")
-    weights_name = f"{DIR_NAME}/{WEIGHTS_NAME}"
-    image_name = f"{DIR_NAME}/{IMAGE_NAME}"
+    weights_name = args.weight
+    image_name = args.output
     # download_weight(weights_name)
-    image = cv2.imread(sys.argv[1])
-    results = predict_bounding_boxes(image, weights_name)
+    image = cv2.imread(args.input)
+    results = predict_bounding_boxes(image, weights_name, args.config)
     score_boxes = convert_to_score_boxes(results)
     print(score_boxes)
     score(score_boxes, True, 256)
