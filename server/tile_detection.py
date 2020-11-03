@@ -118,7 +118,9 @@ def upload_image(image, category):
     yearmonth = f"{now:%Y%m}"
     s3 = boto3.client("s3")
     s3.upload_file(
-        f"{DIR_NAME}/{image_name}", IMAGES_BUCKET, f"{category}/{yearmonth}/{image_name}",
+        f"{DIR_NAME}/{image_name}",
+        IMAGES_BUCKET,
+        f"{category}/{yearmonth}/{image_name}",
     )
 
 
@@ -154,6 +156,7 @@ def convert_to_rectangle(predict_results, class_id_converter=None):
 def convert_to_score_boxes(predict_results):
     return convert_to_rectangle(predict_results, CLASSID_TO_SCORE_TILE_ID)
 
+
 def put_annotation(image, results, anno_file):
     with open(anno_file, "w") as f:
         width = image.shape[1]
@@ -167,15 +170,20 @@ def put_annotation(image, results, anno_file):
             h = box[3]
             center_x = x + w / 2
             center_y = y + h / 2
-            f.write(f"{class_id} {center_x / width}, {center_y / height}, {w / width}, {h / height}\n")
+            f.write(
+                f"{class_id} {center_x / width} {center_y / height} {w / width} {h / height}\n"
+            )
 
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--weight", help="weight file", default=f"{DIR_NAME}/{WEIGHTS_NAME}")
     parser.add_argument("--input", help="input image file")
-    parser.add_argument("--output", help="output image file", default=f"{DIR_NAME}/{IMAGE_NAME}")
+    parser.add_argument(
+        "--output", help="output image file", default=f"{DIR_NAME}/{IMAGE_NAME}"
+    )
     parser.add_argument("--config", help="config file", default=CONFIG)
     parser.add_argument("--anno", help="annotation text file", default=None)
     args = parser.parse_args()
