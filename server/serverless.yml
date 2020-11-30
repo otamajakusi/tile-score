@@ -67,6 +67,7 @@ package:
   include:
     - ./*.py
     - ./yolov3-tile.cfg
+    - ./yolov4-tile.cfg
 
 functions:
   hello:

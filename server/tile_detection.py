@@ -8,7 +8,7 @@ from datetime import datetime
 import random
 import shutil
 
-CONFIG = "./yolov3-tile.cfg"
+CONFIG = "./yolov4-tile.cfg"
 CLASSES = [
     "back",
     "m1",
@@ -93,7 +93,8 @@ CLASSID_TO_SCORE_TILE_ID = [
 ]
 
 WEIGHTS_BUCKET = "tile-score-weights"
-WEIGHTS_NAME = "yolov3-tile_900.weights"
+# WEIGHTS_NAME = "yolov3-tile_900.weights"
+WEIGHTS_NAME = "yolov4-tile_last.weights"
 IMAGES_BUCKET = "tile-score-images"
 IMAGE_NAME = "object-detection.jpg"
 DIR_NAME = "/tmp"
