@@ -146,6 +146,4 @@ functions:
 #       Value: "Some output value"
 
 plugins:
-  - serverless-offline
-  - serverless-offline-python
   - serverless-python-requirements
