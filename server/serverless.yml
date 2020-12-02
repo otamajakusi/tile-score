@@ -73,7 +73,7 @@ functions:
   hello:
     handler: handler.hello
     layers:
-      - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
+      - arn:aws:lambda:us-east-1:267725586390:layer:cv2:2
     events:
       - http:
           path: hello
@@ -84,7 +84,7 @@ functions:
   forbidden:
     handler: handler.forbidden
     layers:
-      - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
+      - arn:aws:lambda:us-east-1:267725586390:layer:cv2:2
     # events:
     #  - http:
     #      path: v1/score
@@ -94,7 +94,7 @@ functions:
   score:
     handler: handler.score
     layers:
-      - arn:aws:lambda:us-east-1:267725586390:layer:cv2:1
+      - arn:aws:lambda:us-east-1:267725586390:layer:cv2:2
     events:
       - http:
           path: v1/score
