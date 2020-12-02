@@ -1,20 +1,30 @@
-yolov3-tile_900.weights: 022791ec3c78ee435d8ab93a4c0d6993c340b900 (sha1hash)
+# pre-conditions
+ssh key to access github
+aws credential
+env.yml (see ../env/README)
 
-npx sls print # to debug serverless.yml
-
-# setup
-npm install
-
-# debug local
-launch offline server
-```bash
-$ npx sls offline --host 0.0.0.0
+# build docker image
+```
+$ cp ../env/env.yml .
+$ DOCKER_BUILDKIT=1 docker build -t tile-score-server --ssh default .
 ```
 
-request to the local server
-```bash
-$ bash test.sh localhost:3000/dev/v2/score
+# run docker image
+```
+$ docker run -it --rm -v ~/.ssh:/root/.ssh -v ~/.aws:/root/.aws tile-score-server /bin/bash
 ```
 
-custom domain
-aws console -> api gateway -> custom domain -> create custom domain
+# deploy to dev
+```
+# npx sls deploy
+```
+
+# deploy to prod
+```
+# npx sls deploy --stage prod
+```
+
+# test
+```bash
+# bash test.sh <endpoint>
+```
