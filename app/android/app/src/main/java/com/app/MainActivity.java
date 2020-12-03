@@ -1,4 +1,4 @@
-package com.tile_score_app;
+package com.app;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "tile_score_app";
+    return "app";
   }
 }
