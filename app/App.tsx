@@ -37,8 +37,8 @@ const IMAGE_HEIGHT = 512;
 let SERVER_URL;
 // v1 endpoint: 'https://tile-score.otamajakusi.net/v1/score';
 if (__DEV__) {
-  // SERVER_URL = 'https://dev-tile-score.otamajakusi.net/v2/score';
-  SERVER_URL = 'http://192.168.0.101:3000/dev/v2/score';
+  SERVER_URL = 'https://dev-tile-score.otamajakusi.net/v2/score';
+  // SERVER_URL = 'http://192.168.0.101:3000/dev/v2/score';
 } else {
   SERVER_URL = 'https://tile-score.otamajakusi.net/v2/score';
 }

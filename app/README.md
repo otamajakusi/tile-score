@@ -1,6 +1,9 @@
 # setup
 ```
 npm i
+(see ../env/README)
+bash magicgen.sh
+bash wbaesgen.sh
 ```
 
 # start server
