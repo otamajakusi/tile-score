@@ -10,8 +10,16 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-community/image-editor": "^2.3.0",
+    "js-base64": "^3.6.0",
     "react": "16.13.1",
-    "react-native": "0.63.3"
+    "react-native": "0.63.3",
+    "react-native-app-link": "^1.0.0",
+    "react-native-camera": "^3.40.0",
+    "react-native-device-info": "^7.2.1",
+    "react-native-fs": "^2.16.6",
+    "react-native-table-component": "^1.2.1",
+    "uglify-js": "^3.12.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -24,6 +32,7 @@
     "@typescript-eslint/parser": "^2.27.0",
     "babel-jest": "^25.1.0",
     "eslint": "^6.5.1",
+    "jcrypto": "^0.2.2-dev",
     "jest": "^25.1.0",
     "metro-react-native-babel-preset": "^0.59.0",
     "react-test-renderer": "16.13.1",

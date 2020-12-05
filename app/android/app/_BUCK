@@ -40,7 +40,7 @@ android_build_config(
 
 android_resource(
     name = "res",
-    package = "com.app",
+    package = "com.tile_score_app",
     res = "src/main/res",
 )
 
