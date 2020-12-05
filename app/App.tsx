@@ -529,12 +529,14 @@ export default class App extends Component<{}> {
     const width = this.state.fetchScore.width;
     const height = this.state.fetchScore.height;
     const barHeight = StatusBar.currentHeight || 0;
+    const window = Dimensions.get('window');
+    const ratio = window.width / width;
+    const yoff = (height * ratio - (window.height - barHeight)) / 2
     const boxViews = boxes.map((box) => {
-      const window = Dimensions.get('window');
-      const xmin = (box[1] * window.width) / width;
-      const ymin = (box[2] * (window.height - barHeight)) / height;
-      const xmax = (box[3] * window.width) / width;
-      const ymax = (box[4] * (window.height - barHeight)) / height;
+      const xmin = box[1] * ratio;
+      const ymin = box[2] * ratio - yoff;
+      const xmax = box[3] * ratio;
+      const ymax = box[4] * ratio - yoff;
       return [
         <View
           key={`label${xmin}${ymin}`}
@@ -583,7 +585,6 @@ export default class App extends Component<{}> {
         <Image
           source={{uri: this.state.imageUri}}
           style={styles.image}
-          resizeMode="stretch"
         />
       </View>
     );
