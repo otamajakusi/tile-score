@@ -595,7 +595,7 @@ export default class App extends Component<{}> {
       <View style={styles.container}>
         {this.state.imageUri ? this.renderImage() : this.renderCamera()}
         {this.state.busy && (
-          <ActivityIndicator style={styles.loading} size="large" />
+          <ActivityIndicator style={styles.loading} size="large" color="#FF6928" />
         )}
         {this.renderBoxes()}
       </View>
@@ -648,8 +648,8 @@ export default class App extends Component<{}> {
             offset: {x: 0, y: 0},
             size: {width: imgWidth, height: imgHeight},
             displaySize: {
-              width: (IMAGE_WIDTH * imgWidth) / imgHeight,
-              height: IMAGE_HEIGHT,
+              width: Dimensions.get('window').width,
+              height: Dimensions.get('window').height,
             },
           }).then(
             (res) => {
