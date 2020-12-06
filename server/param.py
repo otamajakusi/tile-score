@@ -65,10 +65,12 @@ def decode_image(encoded):
     if len(image.shape) != 3:
         print("illegal image format")
         return None
+    '''
     height, width, _ = image.shape[:3]
     if height != 512 or width >= 1024:
         print(f"illegal image size: height={height}, width={width}")
         return None
+    '''
     return image
 
 
