@@ -16,6 +16,19 @@ npx react-native start
 npx react-native run-android
 ```
 
+# run app with release
+```
+npx react-native run-android --variant=release
+```
+`android/app/build/outputs/apk/release/app-release.apk` is generated.
+
+# generate Android App Bundle (aab)
+```
+cd android
+./gradlew bundleRelease
+```
+`app/build/outputs/bundle/release/app-release.aab` is generated.
+
 # error
 https://github.com/facebook/react-native/issues/3199#issuecomment-145426578
 ```
