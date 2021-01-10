@@ -3,6 +3,8 @@ import numpy as np
 
 DNN_IMAGE_SIZE = (512, 512)
 
+net = None
+
 
 def predict_bounding_boxes(image, weights, config, classes):
     width = image.shape[1]
@@ -10,7 +12,11 @@ def predict_bounding_boxes(image, weights, config, classes):
     scale = 1.0 / 255.0  # = 0.00392
 
     # read pre-trained model and config file
-    net = cv2.dnn.readNet(weights, config)
+    global net
+    if not net:
+        net = cv2.dnn.readNet(weights, config)
+        net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+        net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
 
     # create input blob
     blob = cv2.dnn.blobFromImage(image, scale, DNN_IMAGE_SIZE, (0, 0, 0), False, crop=False)

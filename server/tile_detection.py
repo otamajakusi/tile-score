@@ -1,6 +1,5 @@
 import cv2
 import detection
-import boto3
 from tile_score import TileId, score
 import sys
 import os
@@ -103,6 +102,8 @@ WEIGHTS_NAME_DEFAULT = f"{DIR_NAME}/{WEIGHTS_NAME}"
 
 
 def download_weights(weights_name=WEIGHTS_NAME_DEFAULT):
+    import boto3
+
     if os.path.exists(weights_name):
         return
     if os.path.exists(f"./{WEIGHTS_NAME}"):
@@ -113,6 +114,8 @@ def download_weights(weights_name=WEIGHTS_NAME_DEFAULT):
 
 
 def upload_image(image, category):
+    import boto3
+
     now = datetime.now()
     image_name = f"{now:%Y%m%d%H%M}-{random.randint(0, 100000):05}.png"
     cv2.imwrite(f"{DIR_NAME}/{image_name}", image)
@@ -176,6 +179,44 @@ def put_annotation(image, results, anno_file):
             )
 
 
+def capture_video(video_num, weights_name, config):
+    cap = cv2.VideoCapture(video_num)
+    tm = cv2.TickMeter()
+    tm.start()
+    count = 0
+    max_count = 10
+    fps = 0
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            cv2.putText(
+                frame,
+                "FPS: {:.2f}".format(fps),
+                (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1.0,
+                (0, 255, 0),
+                thickness=2,
+            )
+            results = predict_bounding_boxes(frame, weights_name, config)
+            image = draw_bounding_boxes(frame, results)
+            cv2.imshow("tile", image)
+            # cv2.imshow("tile", frame)
+        if count == max_count:
+            tm.stop()
+            fps = max_count / tm.getTimeSec()
+            tm.reset()
+            tm.start()
+            count = 0
+
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+        count += 1
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+
 if __name__ == "__main__":
     import argparse
 
@@ -187,18 +228,22 @@ if __name__ == "__main__":
     )
     parser.add_argument("--config", help="config file", default=CONFIG)
     parser.add_argument("--anno", help="annotation text file", default=None)
+    parser.add_argument("--video", help="video device number", default=0)
     args = parser.parse_args()
 
     print(f"opencv version: {cv2.__version__}")
     weights_name = args.weight
     image_name = args.output
     # download_weight(weights_name)
-    image = cv2.imread(args.input)
-    results = predict_bounding_boxes(image, weights_name, args.config)
-    score_boxes = convert_to_score_boxes(results)
-    score(score_boxes, True, 256)
-    image = draw_bounding_boxes(image, results)
-    if args.anno:
-        put_annotation(image, results, args.anno)
-    cv2.imwrite(image_name, image)
-    # upload_image(image_name)
+    if args.input:
+        image = cv2.imread(args.input)
+        results = predict_bounding_boxes(image, weights_name, args.config)
+        score_boxes = convert_to_score_boxes(results)
+        score(score_boxes, True, 256)
+        image = draw_bounding_boxes(image, results)
+        if args.anno:
+            put_annotation(image, results, args.anno)
+        cv2.imwrite(image_name, image)
+        # upload_image(image_name)
+    else:
+        capture_video(args.video, weights_name, args.config)
