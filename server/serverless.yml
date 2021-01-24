@@ -24,7 +24,7 @@ provider:
   name: aws
   runtime: python3.7
   timeout: 15
-  memorySize: 3008
+  memorySize: 5312 # to use 4-cores
   stage: ${opt:stage, self:custom.defaultStage}
   region: us-east-1
 
